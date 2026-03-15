@@ -6,8 +6,11 @@ logger = logging.getLogger(__name__)
 
 class TelnetServer:
     def __init__(self, host: str, port: int, protocol):
-        self.loop = asyncio.get_event_loop()
-
+        try:
+            self.loop = asyncio.get_running_loop()
+        except RuntimeError:
+            self.loop__doc__loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(self.loop)
         coro = self.loop.create_server(protocol, host, port)
         self.server = self.loop.run_until_complete(coro)
 
